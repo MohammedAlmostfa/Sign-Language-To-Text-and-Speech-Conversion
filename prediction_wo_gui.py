@@ -14,6 +14,9 @@ capture = cv2.VideoCapture("http://192.168.1.103:8080")
 hd = HandDetector(maxHands=1)
 hd2 = HandDetector(maxHands=1)
 
+
+
+
 offset = 29
 step = 1
 flag = False
