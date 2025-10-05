@@ -4,6 +4,7 @@ from cvzone.HandTrackingModule import HandDetector
 import numpy as np
 from keras.models import load_model
 from google.colab.patches import cv2_imshow  # لعرض الصور في Colab
+import traceback
 
 # تحميل النموذج
 
