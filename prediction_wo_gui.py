@@ -3,85 +3,87 @@ import cv2
 from cvzone.HandTrackingModule import HandDetector
 import numpy as np
 from keras.models import load_model
-import traceback
+from google.colab.patches import cv2_imshow  # لعرض الصور في Colab
 
-model = load_model('cnn8grps_rad1_model.h5')
+# تحميل النموذج
+model = load_model('/content/cnn8grps_rad1_model.h5')
+
+# إنشاء صورة بيضاء
 white = np.ones((400, 400), np.uint8) * 255
-cv2.imwrite("C:\\Users\\devansh raval\\PycharmProjects\\pythonProject\\white.jpg", white)
-capture = cv2.VideoCapture("http://192.168.1.103:8080")
+cv2.imwrite("/content/white.jpg", white)
 
+# تحميل الفيديو
+capture = cv2.VideoCapture("/content/vidio.mp4")
 
+# كاشف اليد
 hd = HandDetector(maxHands=1)
 hd2 = HandDetector(maxHands=1)
-
-
-
 
 offset = 29
 step = 1
 flag = False
 suv = 0
 
-
 def distance(x, y):
     return math.sqrt(((x[0] - y[0]) ** 2) + ((x[1] - y[1]) ** 2))
-
 
 def distance_3d(x, y):
     return math.sqrt(((x[0] - y[0]) ** 2) + ((x[1] - y[1]) ** 2) + ((x[2] - y[2]) ** 2))
 
-
 bfh = 0
-dicttt=dict()
-count=0
-kok=[]
+dicttt = dict()
+count = 0
+kok = []
 
 while True:
     try:
-        _, frame = capture.read()
+        ret, frame = capture.read()
+        if not ret:  # نهاية الفيديو
+            break
+
         frame = cv2.flip(frame, 1)
         hands = hd.findHands(frame, draw=False, flipType=True)
-        print(frame.shape)
+
         if hands:
-            # #print(" --------- lmlist=",hands[1])
             hand = hands[0]
             x, y, w, h = hand['bbox']
             image = frame[y - offset:y + h + offset, x - offset:x + w + offset]
-            white = cv2.imread("C:\\Users\\devansh raval\\PycharmProjects\\pythonProject\\white.jpg")
-            # img_final=img_final1=img_final2=0
+
+            white = cv2.imread("/content/white.jpg")
             handz = hd2.findHands(image, draw=False, flipType=True)
+
             if handz:
                 hand = handz[0]
                 pts = hand['lmList']
-                # x1,y1,w1,h1=hand['bbox']
 
                 os = ((400 - w) // 2) - 15
                 os1 = ((400 - h) // 2) - 15
-                for t in range(0, 4, 1):
-                    cv2.line(white, (pts[t][0] + os, pts[t][1] + os1), (pts[t + 1][0] + os, pts[t + 1][1] + os1),
-                             (0, 255, 0), 3)
-                for t in range(5, 8, 1):
-                    cv2.line(white, (pts[t][0] + os, pts[t][1] + os1), (pts[t + 1][0] + os, pts[t + 1][1] + os1),
-                             (0, 255, 0), 3)
-                for t in range(9, 12, 1):
-                    cv2.line(white, (pts[t][0] + os, pts[t][1] + os1), (pts[t + 1][0] + os, pts[t + 1][1] + os1),
-                             (0, 255, 0), 3)
-                for t in range(13, 16, 1):
-                    cv2.line(white, (pts[t][0] + os, pts[t][1] + os1), (pts[t + 1][0] + os, pts[t + 1][1] + os1),
-                             (0, 255, 0), 3)
-                for t in range(17, 20, 1):
-                    cv2.line(white, (pts[t][0] + os, pts[t][1] + os1), (pts[t + 1][0] + os, pts[t + 1][1] + os1),
-                             (0, 255, 0), 3)
-                cv2.line(white, (pts[5][0] + os, pts[5][1] + os1), (pts[9][0] + os, pts[9][1] + os1), (0, 255, 0),
-                         3)
-                cv2.line(white, (pts[9][0] + os, pts[9][1] + os1), (pts[13][0] + os, pts[13][1] + os1), (0, 255, 0),
-                         3)
-                cv2.line(white, (pts[13][0] + os, pts[13][1] + os1), (pts[17][0] + os, pts[17][1] + os1),
-                         (0, 255, 0), 3)
-                cv2.line(white, (pts[0][0] + os, pts[0][1] + os1), (pts[5][0] + os, pts[5][1] + os1), (0, 255, 0),
-                         3)
-                cv2.line(white, (pts[0][0] + os, pts[0][1] + os1), (pts[17][0] + os, pts[17][1] + os1), (0, 255, 0),
-                         3)
+
+                # رسم خطوط اليد على الصورة البيضاء
+                for t in range(0, 4):
+                    cv2.line(white, (pts[t][0] + os, pts[t][1] + os1),
+                             (pts[t + 1][0] + os, pts[t + 1][1] + os1), (0, 255, 0), 3)
+                for t in range(5, 8):
+                    cv2.line(white, (pts[t][0] + os, pts[t][1] + os1),
+                             (pts[t + 1][0] + os, pts[t + 1][1] + os1), (0, 255, 0), 3)
+                for t in range(9, 12):
+                    cv2.line(white, (pts[t][0] + os, pts[t][1] + os1),
+                             (pts[t + 1][0] + os, pts[t + 1][1] + os1), (0, 255, 0), 3)
+                for t in range(13, 16):
+                    cv2.line(white, (pts[t][0] + os, pts[t][1] + os1),
+                             (pts[t + 1][0] + os, pts[t + 1][1] + os1), (0, 255, 0), 3)
+                for t in range(17, 20):
+                    cv2.line(white, (pts[t][0] + os, pts[t][1] + os1),
+                             (pts[t + 1][0] + os, pts[t + 1][1] + os1), (0, 255, 0), 3)
+
+                # وصل الأصابع الكبيرة والخطوط الرئيسية
+                cv2.line(white, (pts[5][0] + os, pts[5][1] + os1), (pts[9][0] + os, pts[9][1] + os1), (0, 255, 0), 3)
+                cv2.line(white, (pts[9][0] + os, pts[9][1] + os1), (pts[13][0] + os, pts[13][1] + os1), (0, 255, 0), 3)
+                cv2.line(white, (pts[13][0] + os, pts[13][1] + os1), (pts[17][0] + os, pts[17][1] + os1), (0, 255, 0), 3)
+                cv2.line(white, (pts[0][0] + os, pts[0][1] + os1), (pts[5][0] + os, pts[5][1] + os1), (0, 255, 0), 3)
+                cv2.line(white, (pts[0][0] + os, pts[0][1] + os1), (pts[17][0] + os, pts[17][1] + os1), (0, 255, 0), 3)
+
+   
 
                 for i in range(21):
                     cv2.circle(white, (pts[i][0] + os, pts[i][1] + os1), 2, (0, 0, 255), 1)
