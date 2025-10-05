@@ -6,7 +6,8 @@ from keras.models import load_model
 from google.colab.patches import cv2_imshow  # لعرض الصور في Colab
 
 # تحميل النموذج
-model = load_model('content/cnn8grps_rad1_model.h5')
+
+model = load_model('cnn8grps_rad1_model.h5')
 
 # إنشاء صورة بيضاء
 white = np.ones((400, 400), np.uint8) * 255
