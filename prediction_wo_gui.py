@@ -8,8 +8,8 @@ import traceback
 model = load_model('cnn8grps_rad1_model.h5')
 white = np.ones((400, 400), np.uint8) * 255
 cv2.imwrite("C:\\Users\\devansh raval\\PycharmProjects\\pythonProject\\white.jpg", white)
+capture = cv2.VideoCapture("http://192.168.1.103:8080")
 
-capture = cv2.VideoCapture(0)
 
 hd = HandDetector(maxHands=1)
 hd2 = HandDetector(maxHands=1)
